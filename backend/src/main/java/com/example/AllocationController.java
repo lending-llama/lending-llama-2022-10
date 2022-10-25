@@ -54,15 +54,25 @@ public class AllocationController {
     private List<PlatformTier> getPlatformTiersDescByRate() {
         var url = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
         var platforms = restTemplate.getForObject(url, Platform[].class);
-        return stream(platforms).flatMap(p -> stream(p.getTiers()).map(t ->
-                new PlatformTier()
+        return mapPlatformsToPlatformTiers(platforms);
+    }
+
+    public List<PlatformTier> mapPlatformsToPlatformTiers(Platform[] platforms) {
+        return stream(platforms).flatMap(p -> stream(p.getTiers()).map(t -> {
+                var maxInput = t.getMax();
+                var max = Double.MAX_VALUE;
+                if (maxInput != null) {
+                    max = maxInput;
+                }
+                return new PlatformTier()
                     .setName(p.getName())
                     .setRate(t.getRate())
-                    .setMax(t.getMax())
-            ))
+                    .setMax(max);
+            }))
             .sorted(Comparator.comparingDouble(PlatformTier::getRate).reversed())
             .collect(Collectors.toList());
     }
+
 
     public Allocation getBestEthRate() {
         var url = "https://priceless-khorana-4dd263.netlify.app/eth-rates.json";
