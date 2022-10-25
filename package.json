@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "concurrently --kill-others --prefix-colors green,blue npm:dev:*",
+    "dev:backend": "cd backend && ./gradlew bootRun",
+    "dev:frontend": "cd frontend && npm start",
+    "test": "concurrently --kill-others-on-fail npm:test:*",
+    "test:backend": "cd backend && ./gradlew test --rerun-tasks",
+    "test:frontend": "cd frontend && npm run test",
+    "test:versions:java": "cat .tool-versions | grep zulu-17.38.21 && cat .github/workflows/backend.yml | grep 17.0.5+8",
+    "test:versions:nodejs": "cat .tool-versions | grep 16.18.0 && cat .github/workflows/frontend.yml | grep 16.18.0"
+  },
+  "devDependencies": {
+    "concurrently": "^6.3.0"
+  },
+  "private": true
+}
