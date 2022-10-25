@@ -42,13 +42,18 @@ public class AllocationController {
 
         var platformTiers = getPlatformTiersDescByRate();
 
-        var count = (int) IntStream.range(1, platformTiers.size())
-            .takeWhile(i -> platformTiers.stream().limit(i).mapToDouble(PlatformTier::getMax).sum() < amount)
-            .count();
+        int count = getCountOfOffersForAmount(amount, platformTiers);
 
         return platformTiers.subList(0, count+1).stream().map(
             t -> new Allocation().setName(t.getName()).setRate(t.getRate())
         );
+    }
+
+    public int getCountOfOffersForAmount(Double amount, List<PlatformTier> platformTiers) {
+        var count = (int) IntStream.range(1, platformTiers.size())
+            .takeWhile(i -> platformTiers.stream().limit(i).mapToDouble(PlatformTier::getMax).sum() < amount)
+            .count();
+        return count;
     }
 
     private List<PlatformTier> getPlatformTiersDescByRate() {
