@@ -1,5 +1,4 @@
 import React from "react";
-import {formatPercentage} from "../formatting/formatPercentage";
 
 // Simple striped table from Tailwind UI
 //   https://tailwindui.com/components/application-ui/lists/tables#component-d60e8c748260b622747ec1568ba9c509
@@ -30,7 +29,7 @@ export const AllocationsTable = ({allocations}) => (
             {allocations.map((allocation, idx) => (
               <tr key={allocation.name+allocation.rate} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{allocation.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatPercentage(allocation.rate)}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{allocation.rate}</td>
               </tr>
             ))}
             </tbody>
