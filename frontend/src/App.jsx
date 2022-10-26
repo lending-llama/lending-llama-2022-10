@@ -4,8 +4,8 @@ import {Card, InputWithLabel} from "./presentation";
 import {AllocationsTable} from "./presentation/AllocationsTable";
 import {errorsAdded} from "./actions/errors";
 import {FEATURES} from "./features";
-import {bestRateFetched, multipleTiersFetched} from "./actions/allocations";
-import {formatRate} from "./presentation/formatting";
+import {multipleTiersFetched} from "./actions/allocations";
+import {BestRate} from "./BestRate";
 
 export const App = () => {
   const features = useSelector(x => x.features)
@@ -14,13 +14,6 @@ export const App = () => {
   const dispatch = useDispatch()
 
   const [amount, setAmount] = useState(0.1);
-
-  const bestAllocation = useSelector(x=>x.allocations.bestRate)
-  useEffect(() => {
-    fetch(`/api/best-rate`)
-      .then(x=>x.json())
-      .then(x=>dispatch(bestRateFetched(x)))
-  }, [])
 
   const allocations = useSelector(x=>x.allocations.multipleTiers)
   useEffect(() => {
@@ -38,11 +31,7 @@ export const App = () => {
 
   return (
     <>
-      <div data-testid="allocation-c020b901">
-        <Card>
-          Best rate: {formatRate(bestAllocation.rate)} ({bestAllocation.name})
-        </Card>
-      </div>
+      <BestRate />
       {featureMultipleTiersOn
         ? <div className="pt-2">
             <Card>
