@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +42,7 @@ class AllocationControllerAllocationTest {
     }
 
     @Test
-    void findsBest() throws Exception {
+    void fetchesRatesFromExternalServiceAndDeterminesAllocations() throws Exception {
         final String anyPlatformName = "platform";
         final double anyRate = 1.0;
         final var anyPlaform = new Platform()
