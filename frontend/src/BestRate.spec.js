@@ -1,11 +1,12 @@
 import nock from 'nock'
 import {render, waitFor} from "@testing-library/react";
 import React from "react";
-import {App, BestRate} from "./App";
+import {App} from "./App";
 import {Provider} from "react-redux";
 import {store} from "./redux";
 import 'whatwg-fetch' // sets global.fetch
-import '@testing-library/jest-dom' // extends Jest with .toHaveTextContent
+import '@testing-library/jest-dom'
+import {BestRate} from "./BestRate"; // extends Jest with .toHaveTextContent
 
 function getBestRateSurroundingDivId() {
   return 'allocation-c020b901';
