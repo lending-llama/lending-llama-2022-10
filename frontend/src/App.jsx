@@ -7,13 +7,8 @@ import {FEATURES} from "./features";
 import {bestRateFetched, multipleTiersFetched} from "./actions/allocations";
 import {formatRate} from "./presentation/formatting";
 
-export const App = () => {
-  const features = useSelector(x => x.features)
-  const featureMultipleTiersOn = features[FEATURES.MULTIPLE_TIERS] === "on";
-
+export const BestRate = () => {
   const dispatch = useDispatch()
-
-  const [amount, setAmount] = useState(0.1);
 
   const bestAllocation = useSelector(x=>x.allocations.bestRate)
   useEffect(() => {
@@ -21,6 +16,23 @@ export const App = () => {
       .then(x=>x.json())
       .then(x=>dispatch(bestRateFetched(x)))
   }, [])
+
+  return (
+    <div data-testid="allocation-c020b901">
+      <Card>
+        Best rate: {formatRate(bestAllocation.rate)} ({bestAllocation.name})
+      </Card>
+    </div>
+  )
+}
+
+export const App = () => {
+  const features = useSelector(x => x.features)
+  const featureMultipleTiersOn = features[FEATURES.MULTIPLE_TIERS] === "on";
+
+  const dispatch = useDispatch()
+
+  const [amount, setAmount] = useState(0.1);
 
   const allocations = useSelector(x=>x.allocations.multipleTiers)
   useEffect(() => {
@@ -38,11 +50,7 @@ export const App = () => {
 
   return (
     <>
-      <div data-testid="allocation-c020b901">
-        <Card>
-          Best rate: {formatRate(bestAllocation.rate)} ({bestAllocation.name})
-        </Card>
-      </div>
+      <BestRate />
       {featureMultipleTiersOn
         ? <div className="pt-2">
             <Card>
