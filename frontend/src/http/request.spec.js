@@ -1,5 +1,5 @@
 import nock from "nock";
-import {BestRate} from "../components/container/BestRate";
+import {BestRate} from "../domain/best_rate/BestRate";
 import React from "react";
 import {fetchJson} from "./request";
 
