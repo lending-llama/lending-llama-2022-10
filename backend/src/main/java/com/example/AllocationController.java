@@ -57,9 +57,12 @@ public class AllocationController {
     }
 
     private List<PlatformTier> getPlatformTiersDescByRate() {
-        var url = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
-        var platforms = restTemplate.getForObject(url, Platform[].class);
+        Platform[] platforms = fetchPlatforms("https://priceless-khorana-4dd263.netlify.app/btc-rates.json");
         return mapPlatformsToPlatformTiers(platforms);
+    }
+
+    private Platform[] fetchPlatforms(String url) {
+        return restTemplate.getForObject(url, Platform[].class);
     }
 
     public List<PlatformTier> mapPlatformsToPlatformTiers(Platform[] platforms) {
@@ -80,16 +83,8 @@ public class AllocationController {
 
 
     public Allocation getBestEthRate() {
-        var url = "https://priceless-khorana-4dd263.netlify.app/eth-rates.json";
-        var platforms = restTemplate.getForObject(url, Platform[].class);
-        var platformTiers = stream(platforms).flatMap(p -> stream(p.getTiers()).map(t ->
-                new PlatformTier()
-                    .setName(p.getName())
-                    .setRate(t.getRate())
-                    .setMax(t.getMax())
-            ))
-            .sorted(Comparator.comparingDouble(PlatformTier::getRate).reversed())
-            .toList();
+        Platform[] platforms = fetchPlatforms("https://priceless-khorana-4dd263.netlify.app/eth-rates.json");
+        var platformTiers = mapPlatformsToPlatformTiers(platforms);
 
         var tier1 = platformTiers.get(0);
         return new Allocation().setName(tier1.getName()).setRate(tier1.getRate());
