@@ -10,17 +10,15 @@ export const App = () => {
   const featureMultipleTiersOn = features[FEATURES.MULTIPLE_TIERS] === "on";
 
   return (
-    <>
+    <div className="grid gap-2">
       <BestRate />
       {featureMultipleTiersOn
         ? <AllocationsCalculator />
         : null
       }
-      <div className="pt-2">
-        <Card>
-          <p>WAGMI</p>
-        </Card>
-      </div>
-    </>
+      <Card>
+        <p>WAGMI</p>
+      </Card>
+    </div>
   );
 }
