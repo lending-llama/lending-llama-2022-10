@@ -14,7 +14,6 @@ export const BestRate = () => {
   useEffect(() => {
     fetchJson(`/api/best-rate`, dispatch)
       .then(x => dispatch(bestRateFetched(x)))
-      .catch(e => dispatch(errorsAdded(e.message)));
   }, [])
 
   return (

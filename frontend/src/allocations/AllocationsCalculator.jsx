@@ -16,7 +16,6 @@ export const AllocationsCalculator = () => {
   useEffect(() => {
     fetchJson(`/api/allocations?amount=${amount}`, dispatch)
       .then(x=>dispatch(multipleTiersFetched(x)))
-      .catch(e => dispatch(errorsAdded(e.message)))
   }, [amount])
 
   return (
