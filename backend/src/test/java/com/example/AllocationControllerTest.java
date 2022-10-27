@@ -12,12 +12,8 @@ class AllocationControllerTest {
     @Test
     void mapPlatformsToPlatformTiers() {
         var controller = new AllocationController(null,null);
-        Platform.Tier[] tier = {new Platform.Tier()};
-        tier[0].setMax(null);
-        tier[0].setRate(1.0);
-        Platform[] platform = {new Platform()};
-        platform[0].setName("Ledn");
-        platform[0].setTiers(tier);
+        Platform.Tier[] tier = {new Platform.Tier().setMax(null)};
+        Platform[] platform = {new Platform().setTiers(tier)};
 
         var platformTiers = controller.mapPlatformsToPlatformTiers(platform);
 
@@ -27,14 +23,8 @@ class AllocationControllerTest {
     @Test
     void getCandidateCount() {
         var controller = new AllocationController(null,null);
-
-        Platform.Tier[] tier = {new Platform.Tier()};
-        tier[0].setMax(null);
-        tier[0].setRate(1.0);
-        Platform[] platform = {new Platform()};
-        platform[0].setName("Ledn");
-        platform[0].setTiers(tier);
-
+        Platform.Tier[] tier = {new Platform.Tier().setMax(null).setRate(1.0)};
+        Platform[] platform = {new Platform().setTiers(tier)};
         var platformTiers = controller.mapPlatformsToPlatformTiers(platform);
 
         var count = controller.getCountOfOffersForAmount(1.2, platformTiers);
@@ -43,18 +33,10 @@ class AllocationControllerTest {
     }
 
     @Test
-    void getCandidateCount2() {
+    void getCandidateCountForMixedTiers() {
         var controller = new AllocationController(null,null);
-
-        Platform.Tier[] tier = {new Platform.Tier(), new Platform.Tier()};
-        tier[0].setMax(1.0);
-        tier[0].setRate(1.0);
-        tier[1].setMax(null);
-        tier[1].setRate(1.0);
-        Platform[] platform = {new Platform()};
-        platform[0].setName("Ledn");
-        platform[0].setTiers(tier);
-
+        Platform.Tier[] tiers = {new Platform.Tier().setMax(1.0).setRate(1.0), new Platform.Tier().setMax(null).setRate(1.0)};
+        Platform[] platform = {new Platform().setTiers(tiers)};
         var platformTiers = controller.mapPlatformsToPlatformTiers(platform);
 
         var count = controller.getCountOfOffersForAmount(1.2, platformTiers);
