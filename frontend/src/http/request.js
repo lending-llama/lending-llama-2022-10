@@ -1,4 +1,4 @@
-import {errorsAdded} from "../redux/actions/errors";
+import {errorsAdded} from "../error/errorsActions";
 import 'whatwg-fetch' // sets global.fetch
 
 export function fetchJson(url, dispatch) {

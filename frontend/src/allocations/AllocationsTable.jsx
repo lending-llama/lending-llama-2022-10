@@ -1,5 +1,5 @@
 import React from "react";
-import {formatRate} from "../../utils/formatting";
+import {formatRate} from "../presentation/formatting";
 
 
 // Simple striped table from Tailwind UI

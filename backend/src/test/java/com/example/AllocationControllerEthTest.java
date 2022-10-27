@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.allocation.Allocation;
+import com.example.allocation.Platform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,5 @@
-import {errorsReducer, getFirstError} from "./errors";
-import {errorsAdded, errorsDismissedFirst} from "../actions/errors";
+import {errorsReducer, getFirstError} from "./errorsReducer";
+import {errorsAdded, errorsDismissedFirst} from "./errorsActions";
 import * as r from 'ramda'
 
 describe('Errors reducer', () => {

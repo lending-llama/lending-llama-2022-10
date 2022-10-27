@@ -1,4 +1,4 @@
-package com.example;
+package com.example.allocation;
 
 import lombok.Data;
 

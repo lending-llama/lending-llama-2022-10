@@ -6,6 +6,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.allocation.Allocation;
+import com.example.allocation.Platform;
 import com.example.feature.FeatureState;
 import com.example.feature.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;

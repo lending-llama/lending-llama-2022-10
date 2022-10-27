@@ -1,6 +1,6 @@
 import {SplitFactory} from "@splitsoftware/splitio";
-import {store} from "./redux/redux";
-import {featureChanged} from "./redux/actions/features";
+import {store} from "../redux";
+import * as r from "ramda";
 
 export const FEATURES = {
   FIRST: "my-first-split",
@@ -22,3 +22,19 @@ let listener = () => {
 
 client.on(client.Event.SDK_READY, listener);
 client.on(client.Event.SDK_UPDATE, listener);
+
+//actions
+export const featureChanged = (name, value) => ({type: FEATURE_CHANGED, payload: {[name]: value}})
+
+//constants
+export const FEATURE_CHANGED = 'features/changed'
+
+//reducers
+export const featuresReducer = (state = {}, action) => {
+  switch (action.type) {
+    case FEATURE_CHANGED:
+      return r.mergeRight(state, action.payload)
+    default:
+      return state
+  }
+}
