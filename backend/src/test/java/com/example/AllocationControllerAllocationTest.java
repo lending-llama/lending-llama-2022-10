@@ -60,7 +60,7 @@ class AllocationControllerAllocationTest {
             );
 
         final var expected = Collections.singletonList(
-            new Allocation().setName(anyPlatformName).setRate(anyRate)
+            new Allocation(anyPlatformName, anyRate)
         );
 
         final String anyAmount = "1";

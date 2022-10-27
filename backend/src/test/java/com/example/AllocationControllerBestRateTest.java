@@ -15,6 +15,6 @@ public class AllocationControllerBestRateTest {
     @Test
     public void returnsBestRate() throws Exception {
         var res = template.getForEntity("/best-rate", Allocation.class);
-        assertThat(res.getBody()).isEqualTo(new Allocation().setName("Ledn").setRate(6.25));
+        assertThat(res.getBody()).isEqualTo(new Allocation("Ledn", 6.25));
     }
 }

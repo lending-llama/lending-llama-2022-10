@@ -19,8 +19,8 @@ import static java.util.Arrays.stream;
 @RestController
 public class AllocationController {
 
-    private RestTemplate restTemplate;
-    private SplitClient splitClient;
+    private final RestTemplate restTemplate;
+    private final SplitClient splitClient;
 
     public AllocationController(RestTemplate restTemplate, SplitClient splitClient) {
         this.restTemplate = restTemplate;
@@ -30,12 +30,12 @@ public class AllocationController {
     @GetMapping("/best-rate")
     public Allocation getBestRate() {
         var tier1 = getPlatformTiersDescByRate().get(0);
-        return new Allocation().setName(tier1.getName()).setRate(tier1.getRate());
+        return new Allocation(tier1.getName(), tier1.getRate());
     }
 
     @GetMapping("/allocations")
-    public Stream<Allocation> getAllocation(@RequestParam Double amount) throws Exception {
-        var treatment = splitClient.getTreatment("key","multiple-tiers");
+    public Stream<Allocation> getAllocation(@RequestParam Double amount) {
+        var treatment = splitClient.getTreatment("key", "multiple-tiers");
         if (!"on".equals(treatment)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -44,8 +44,8 @@ public class AllocationController {
 
         int count = getCountOfOffersForAmount(amount, platformTiers);
 
-        return platformTiers.subList(0, count+1).stream().map(
-            t -> new Allocation().setName(t.getName()).setRate(t.getRate())
+        return platformTiers.subList(0, count + 1).stream().map(
+            t -> new Allocation(t.getName(), t.getRate())
         );
     }
 
@@ -87,6 +87,6 @@ public class AllocationController {
         var platformTiers = mapPlatformsToPlatformTiers(platforms);
 
         var tier1 = platformTiers.get(0);
-        return new Allocation().setName(tier1.getName()).setRate(tier1.getRate());
+        return new Allocation(tier1.getName(), tier1.getRate());
     }
 }

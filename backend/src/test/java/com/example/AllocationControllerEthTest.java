@@ -52,6 +52,6 @@ public class AllocationControllerEthTest {
                 .body(mapper.writeValueAsString(List.of(platform1, platform2)))
             );
 
-        assertThat(allocationController.getBestEthRate()).isEqualTo(new Allocation().setName("platform2").setRate(6.0));
+        assertThat(allocationController.getBestEthRate()).isEqualTo(new Allocation("platform2", 6.0));
     }
 }
