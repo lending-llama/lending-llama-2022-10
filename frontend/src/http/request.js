@@ -10,5 +10,8 @@ export function fetchJson(url, dispatch) {
       return x
     })
     .then(x => x.json())
-    .catch(e => dispatch(errorsAdded(e.message)));
+    .catch(e => {
+      dispatch(errorsAdded(e.message));
+      throw e;
+    });
 }

@@ -20,7 +20,10 @@ describe('BestRate', () => {
       callbackCalled = true;
     }
 
-    await fetchJson(anyURL, callback)
+    try {
+      await fetchJson(anyURL, callback)
+      return Promise.reject('expected to reject but did not')
+    } catch (e) { /* ignore */ }
 
     expect(callbackCalled).toBe(true)
   })
