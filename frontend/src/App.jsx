@@ -13,9 +13,7 @@ export const App = () => {
     <>
       <BestRate />
       {featureMultipleTiersOn
-        ? <div className="pt-2">
-          <AllocationsCalculator />
-        </div>
+        ? <AllocationsCalculator />
         : null
       }
       <div className="pt-2">
