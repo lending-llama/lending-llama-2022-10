@@ -1,8 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
-import {bestRateFetched} from "./actions/allocations";
-import {Card} from "./presentation";
-import {formatRate} from "./presentation/formatting";
+import {bestRateFetched} from "../../redux/actions/allocations";
+import {Card} from "../presentation/Panels";
+import {formatRate} from "../../utils/formatting";
 
 export const BestRate = () => {
   const dispatch = useDispatch()

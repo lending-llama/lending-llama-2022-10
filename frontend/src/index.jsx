@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {App} from "./App";
 import './features'
-import './redux'
+import './redux/redux'
 import {Provider} from "react-redux";
-import {store} from "./redux";
+import {store} from "./redux/redux";
 import {AppShell} from "./AppShell";
 
 const app = (
