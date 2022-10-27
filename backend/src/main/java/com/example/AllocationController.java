@@ -1,8 +1,10 @@
 package com.example;
 
+import com.example.model.Allocation;
+import com.example.model.Platform;
+import com.example.model.PlatformTier;
 import com.example.feature.Feature;
 import com.example.feature.FeatureState;
-import io.split.client.SplitClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

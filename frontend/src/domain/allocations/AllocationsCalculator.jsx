@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Card} from "../presentation/Panels";
-import {InputWithLabel} from '../presentation/InputGroups'
-import {AllocationsTable} from "../presentation/AllocationsTable";
-import {errorsAdded} from "../../redux/actions/errors";
-import {multipleTiersFetched} from "../../redux/actions/allocations";
-import {fetchJson} from "../../utils/request";
+import {Card} from "../../presentation/Panels";
+import {InputWithLabel} from '../../presentation/InputGroups'
+import {AllocationsTable} from "./AllocationsTable";
+import {errorsAdded} from "../errors/actions";
+import {multipleTiersFetched} from "./actions";
+import {fetchJson} from "../../http/request";
 
 export const AllocationsCalculator = () => {
   const dispatch = useDispatch()
