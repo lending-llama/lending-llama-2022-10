@@ -15,11 +15,10 @@ const factory = SplitFactory({
 });
 const client = factory.client();
 
-client.on(client.Event.SDK_READY, () => {
+let listener = () => {
   store.dispatch(featureChanged(FEATURES.FIRST, client.getTreatment(FEATURES.FIRST)))
   store.dispatch(featureChanged(FEATURES.MULTIPLE_TIERS, client.getTreatment(FEATURES.MULTIPLE_TIERS)))
-});
-client.on(client.Event.SDK_UPDATE, () => {
-  store.dispatch(featureChanged(FEATURES.FIRST, client.getTreatment(FEATURES.FIRST)))
-  store.dispatch(featureChanged(FEATURES.MULTIPLE_TIERS, client.getTreatment(FEATURES.MULTIPLE_TIERS)))
-});
+};
+
+client.on(client.Event.SDK_READY, listener);
+client.on(client.Event.SDK_UPDATE, listener);
