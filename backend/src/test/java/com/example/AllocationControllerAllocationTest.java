@@ -6,8 +6,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,8 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootTest
 @AutoConfigureMockMvc
 class AllocationControllerAllocationTest {
+
+    private static final String BTC_RATES_URL = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
 
     @Autowired
     private MockMvc mvc;
@@ -49,15 +53,7 @@ class AllocationControllerAllocationTest {
             .setName(anyPlatformName)
             .setTiers(new Platform.Tier[]{new Platform.Tier().setRate(anyRate)});
 
-        final String btcRatesUrl = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
-        mockServer
-            .expect(
-                requestTo(new URI(btcRatesUrl)))
-            .andExpect(method(HttpMethod.GET))
-            .andRespond(withStatus(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(mapper.writeValueAsString(List.of(anyPlaform)))
-            );
+        setupMockServer(anyPlaform, BTC_RATES_URL);
 
         final var expected = Collections.singletonList(
             new Allocation().setName(anyPlatformName).setRate(anyRate)
@@ -68,5 +64,17 @@ class AllocationControllerAllocationTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    private void setupMockServer(final Platform responseModel, final String url)
+        throws URISyntaxException, JsonProcessingException {
+        mockServer
+            .expect(
+                requestTo(new URI(url)))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(mapper.writeValueAsString(List.of(responseModel)))
+            );
     }
 }
