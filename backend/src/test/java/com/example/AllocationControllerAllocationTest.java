@@ -6,8 +6,12 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.feature.FeatureState;
+import com.example.feature.Feature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +31,13 @@ import org.springframework.web.client.RestTemplate;
 @AutoConfigureMockMvc
 class AllocationControllerAllocationTest {
 
+    private static final String BTC_RATES_URL = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
+
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private FeatureState featureState;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -42,31 +51,50 @@ class AllocationControllerAllocationTest {
     }
 
     @Test
-    void fetchesRatesFromExternalServiceAndDeterminesAllocations() throws Exception {
+    void fetchesRatesFromExternalServiceAndDeterminesAllocationsWhenFeatureIsEnabled() throws Exception {
+        // given
+        featureState.enable(Feature.MULTIPLE_TIERS);
         final String anyPlatformName = "platform";
         final double anyRate = 1.0;
         final var anyPlaform = new Platform()
             .setName(anyPlatformName)
             .setTiers(new Platform.Tier[]{new Platform.Tier().setRate(anyRate)});
 
-        final String btcRatesUrl = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
-        mockServer
-            .expect(
-                requestTo(new URI(btcRatesUrl)))
-            .andExpect(method(HttpMethod.GET))
-            .andRespond(withStatus(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(mapper.writeValueAsString(List.of(anyPlaform)))
-            );
+        setupMockServer(anyPlaform, BTC_RATES_URL);
 
         final var expected = Collections.singletonList(
             new Allocation().setName(anyPlatformName).setRate(anyRate)
         );
 
+        // when + then
         final String anyAmount = "1";
         mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void respondsWith404WhenFeatureIsDisabled() throws Exception {
+        // given
+        featureState.disable(Feature.MULTIPLE_TIERS);
+
+        // when + then
+        final String anyAmount = "1";
+        mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+    }
+
+    private void setupMockServer(final Platform responseModel, final String url)
+        throws URISyntaxException, JsonProcessingException {
+        mockServer
+            .expect(
+                requestTo(new URI(url)))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(mapper.writeValueAsString(List.of(responseModel)))
+            );
     }
 }
