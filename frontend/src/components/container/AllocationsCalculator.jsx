@@ -24,19 +24,17 @@ export const AllocationsCalculator = () => {
   }, [amount])
 
   return (
-    <div className="pt-2">
-      <CardWithHeader header="Calculate Allocation for Amount">
-        <InputWithLabel
-          name="amount"
-          label="BTC Amount"
-          type="number"
-          value={amount}
-          step="0.1"
-          placeholder="Amount of BTC you want to lend"
-          onChange={e => setAmount(e.target.value)}
-        />
-        <div className="pt-4"><AllocationsTable allocations={allocations}/></div>
-      </CardWithHeader>
-    </div>
+    <Card header="Calculate Allocation for Amount">
+      <InputWithLabel
+        name="amount"
+        label="BTC Amount"
+        type="number"
+        value={amount}
+        step="0.1"
+        placeholder="Amount of BTC you want to lend"
+        onChange={e => setAmount(e.target.value)}
+      />
+      <div className="pt-4"><AllocationsTable allocations={allocations}/></div>
+    </Card>
   );
 }
