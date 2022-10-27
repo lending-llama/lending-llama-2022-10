@@ -6,6 +6,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.feature.FeatureState;
+import com.example.feature.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -35,6 +37,9 @@ class AllocationControllerAllocationTest {
     private MockMvc mvc;
 
     @Autowired
+    private FeatureState featureState;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     private MockRestServiceServer mockServer;
@@ -46,7 +51,9 @@ class AllocationControllerAllocationTest {
     }
 
     @Test
-    void fetchesRatesFromExternalServiceAndDeterminesAllocations() throws Exception {
+    void fetchesRatesFromExternalServiceAndDeterminesAllocationsWhenFeatureIsEnabled() throws Exception {
+        // given
+        featureState.enable(Feature.MULTIPLE_TIERS);
         final String anyPlatformName = "platform";
         final double anyRate = 1.0;
         final var anyPlaform = new Platform()
@@ -59,11 +66,24 @@ class AllocationControllerAllocationTest {
             new Allocation().setName(anyPlatformName).setRate(anyRate)
         );
 
+        // when + then
         final String anyAmount = "1";
         mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void respondsWith404WhenFeatureIsDisabled() throws Exception {
+        // given
+        featureState.disable(Feature.MULTIPLE_TIERS);
+
+        // when + then
+        final String anyAmount = "1";
+        mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 
     private void setupMockServer(final Platform responseModel, final String url)
