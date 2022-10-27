@@ -4,13 +4,14 @@ import {Card} from "./components/presentation/Panels";
 import {FEATURES} from "./features";
 import {BestRate} from "./components/container/BestRate";
 import {AllocationsCalculator} from "./components/container/AllocationsCalculator";
+import {VerticalContainer} from "./components/presentation/VerticalContainer";
 
 export const App = () => {
   const features = useSelector(x => x.features)
   const featureMultipleTiersOn = features[FEATURES.MULTIPLE_TIERS] === "on";
 
   return (
-    <div className="grid gap-2">
+    <VerticalContainer>
       <BestRate />
       {featureMultipleTiersOn
         ? <AllocationsCalculator />
@@ -19,6 +20,6 @@ export const App = () => {
       <Card>
         <p>WAGMI</p>
       </Card>
-    </div>
+    </VerticalContainer>
   );
 }
