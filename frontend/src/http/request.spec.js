@@ -1,7 +1,6 @@
 import nock from "nock";
-import {BestRate} from "../best-rate/BestRate";
 import React from "react";
-import {FETCH_ERROR, fetchJson} from "./request";
+import {fetchEventTarget, fetchJson} from "./request";
 
 describe('#fetchJson', () => {
   beforeEach(nock.cleanAll)
@@ -17,7 +16,7 @@ describe('#fetchJson', () => {
 
     let callbackCalled = false;
     const callback = () => callbackCalled = true;
-    window.addEventListener(FETCH_ERROR, callback)
+    fetchEventTarget.onError(callback)
 
     try {
       await fetchJson(anyURL)
