@@ -33,7 +33,7 @@ public class Application {
             .build();
         var splitFactory = SplitFactoryBuilder.build("reqt8c55ttivqsitjju67ikte2iamsmggagf", config);
         var splitClient = splitFactory.client();
-//        splitClient.blockUntilReady();
+        splitClient.blockUntilReady();
         return splitClient;
     }
 
@@ -41,5 +41,8 @@ public class Application {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
+
+    @Bean
+    public FeatureState featureState() { return new FeatureState(); }
 
 }

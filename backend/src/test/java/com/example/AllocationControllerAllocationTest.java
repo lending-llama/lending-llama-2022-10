@@ -33,6 +33,9 @@ class AllocationControllerAllocationTest {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private FeatureState featureState;
+
     private MockRestServiceServer mockServer;
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -48,6 +51,8 @@ class AllocationControllerAllocationTest {
         final var anyPlaform = new Platform()
             .setName(anyPlatformName)
             .setTiers(new Platform.Tier[]{new Platform.Tier().setRate(anyRate)});
+
+        featureState.setMultipleTiersEnabled(true);
 
         final String btcRatesUrl = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
         mockServer

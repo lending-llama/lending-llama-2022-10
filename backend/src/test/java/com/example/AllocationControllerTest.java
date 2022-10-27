@@ -1,8 +1,7 @@
 package com.example;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,5 +59,14 @@ class AllocationControllerTest {
         var count = controller.getCountOfOffersForAmount(1.2, platformTiers);
 
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void locksAllocationsRouteWhenMultipleTiersFeatureDisabled() {
+        var featureState = new FeatureState();
+        var controller = new AllocationController(null,featureState);
+
+        final double anyAmount = 1.0;
+        assertThrows(ResponseStatusException.class,() -> controller.getAllocation(anyAmount));
     }
 }
