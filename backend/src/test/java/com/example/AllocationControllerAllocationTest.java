@@ -33,6 +33,9 @@ class AllocationControllerAllocationTest {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private FeatureState featureState;
+
     private MockRestServiceServer mockServer;
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -64,9 +67,37 @@ class AllocationControllerAllocationTest {
         );
 
         final String anyAmount = "1";
+
+        featureState.setAllowMultipleTiers(true);
         mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void fetchesRatesFromExternalServiceAndDeterminesAllocationsNotFoundCausedByFeatureFlagIsOff() throws Exception {
+        final String anyPlatformName = "platform";
+        final double anyRate = 1.0;
+        final var anyPlaform = new Platform()
+            .setName(anyPlatformName)
+            .setTiers(new Platform.Tier[]{new Platform.Tier().setRate(anyRate)});
+
+        final String btcRatesUrl = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
+        mockServer
+            .expect(
+                requestTo(new URI(btcRatesUrl)))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(mapper.writeValueAsString(List.of(anyPlaform)))
+            );
+
+        final String anyAmount = "1";
+
+        featureState.setAllowMultipleTiers(false);
+        mvc.perform(MockMvcRequestBuilders.get("/allocations?amount=" + anyAmount)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 }
