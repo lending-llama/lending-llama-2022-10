@@ -5,6 +5,7 @@ import {InputWithLabel} from '../presentation/InputGroups'
 import {AllocationsTable} from "../presentation/AllocationsTable";
 import {errorsAdded} from "../../redux/actions/errors";
 import {multipleTiersFetched} from "../../redux/actions/allocations";
+import {fetchJson} from "../../utils/request";
 
 export const AllocationsCalculator = () => {
   const dispatch = useDispatch()
@@ -13,12 +14,7 @@ export const AllocationsCalculator = () => {
 
   const allocations = useSelector(x=>x.allocations.multipleTiers)
   useEffect(() => {
-    fetch(`/api/allocations?amount=${amount}`)
-      .then(async x => {
-        if (x.status >= 400) {throw new Error(await x.text())}
-        return x
-      })
-      .then(x=>x.json())
+    fetchJson(`/api/allocations?amount=${amount}`, dispatch)
       .then(x=>dispatch(multipleTiersFetched(x)))
       .catch(e => dispatch(errorsAdded(e.message)))
   }, [amount])
