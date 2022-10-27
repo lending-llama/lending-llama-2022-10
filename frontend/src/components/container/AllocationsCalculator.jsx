@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Card} from "../presentation/Panels";
+import {Card, CardWithHeader} from "../presentation/Panels";
 import {InputWithLabel} from '../presentation/InputGroups'
 import {AllocationsTable} from "../presentation/AllocationsTable";
 import {errorsAdded} from "../../redux/actions/errors";
@@ -24,7 +24,7 @@ export const AllocationsCalculator = () => {
   }, [amount])
 
   return (
-    <Card>
+    <CardWithHeader header="Calculate Allocation for Amount">
       <InputWithLabel
         name="amount"
         label="BTC Amount"
@@ -35,6 +35,6 @@ export const AllocationsCalculator = () => {
         onChange={e => setAmount(e.target.value)}
       />
       <div className="pt-4"><AllocationsTable allocations={allocations}/></div>
-    </Card>
+    </CardWithHeader>
   );
 }
