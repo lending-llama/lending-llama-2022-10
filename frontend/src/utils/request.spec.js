@@ -1,11 +1,6 @@
 import nock from "nock";
-import {render, waitFor} from "@testing-library/react";
-import {Provider} from "react-redux";
-import {store} from "../redux/redux";
 import {BestRate} from "../components/container/BestRate";
-import {formatRate} from "./formatting";
 import React from "react";
-import {errorsReducer, getFirstError} from "../redux/reducers/errors";
 import {fetchJson} from "./request";
 
 describe('BestRate', () => {
@@ -13,14 +8,14 @@ describe('BestRate', () => {
 
   it('catches http status errors', async () => {
     const anyURL = "/api/wurst";
-    const anyErrorCode = 400;
+    const lowestErrorBoundary = 400;
+    const validJson = {};
 
     nock(/./)
       .get(anyURL)
-      .reply(anyErrorCode, {})
+      .reply(lowestErrorBoundary, validJson)
 
     let callbackCalled = false;
-
     const callback = () => {
       callbackCalled = true;
     }
