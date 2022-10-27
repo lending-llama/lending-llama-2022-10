@@ -12,7 +12,7 @@ export const BestRate = () => {
   const bestAllocation = useSelector(x => x.allocations.bestRate)
 
   useEffect(() => {
-    fetchJson(`/api/best-rate`, dispatch)
+    fetchJson(`/api/best-rate`)
       .then(x => dispatch(bestRateFetched(x)))
   }, [])
 

@@ -14,7 +14,7 @@ export const AllocationsCalculator = () => {
 
   const allocations = useSelector(x=>x.allocations.multipleTiers)
   useEffect(() => {
-    fetchJson(`/api/allocations?amount=${amount}`, dispatch)
+    fetchJson(`/api/allocations?amount=${amount}`)
       .then(x=>dispatch(multipleTiersFetched(x)))
   }, [amount])
 

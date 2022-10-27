@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {App} from "./App";
 import './features/init'
 import './redux'
+import './errors/errors-bridge'
 import {Provider} from "react-redux";
 import {store} from "./redux";
 import {AppShell} from "./AppShell";

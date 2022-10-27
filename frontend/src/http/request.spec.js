@@ -1,9 +1,9 @@
 import nock from "nock";
 import {BestRate} from "../best-rate/BestRate";
 import React from "react";
-import {fetchJson} from "./request";
+import {FETCH_ERROR, fetchJson} from "./request";
 
-describe('BestRate', () => {
+describe('#fetchJson', () => {
   beforeEach(nock.cleanAll)
 
   it('catches http status errors', async () => {
@@ -16,12 +16,11 @@ describe('BestRate', () => {
       .reply(lowestErrorBoundary, validJson)
 
     let callbackCalled = false;
-    const callback = () => {
-      callbackCalled = true;
-    }
+    const callback = () => callbackCalled = true;
+    window.addEventListener(FETCH_ERROR, callback)
 
     try {
-      await fetchJson(anyURL, callback)
+      await fetchJson(anyURL)
       return Promise.reject('expected to reject but did not')
     } catch (e) { /* ignore */ }
 
