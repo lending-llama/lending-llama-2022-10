@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Card, CardWithHeader} from "../presentation/Panels";
+import {Card} from "../presentation/Panels";
 import {InputWithLabel} from '../presentation/InputGroups'
 import {AllocationsTable} from "../presentation/AllocationsTable";
 import {errorsAdded} from "../../redux/actions/errors";

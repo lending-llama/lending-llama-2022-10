@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import {Card, CardWithHeader} from "./Panels";
+import {Card} from "./Panels";
 
 describe('Card', () => {
   it('has skeleton as specified by Tailwind UI', () => {
