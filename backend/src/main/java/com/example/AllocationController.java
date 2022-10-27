@@ -19,6 +19,8 @@ import static java.util.Arrays.stream;
 @RestController
 public class AllocationController {
 
+    private static final String COIN_BTC = "btc";
+    private static final String COIN_ETH = "eth";
     private RestTemplate restTemplate;
     private SplitClient splitClient;
 
@@ -29,7 +31,7 @@ public class AllocationController {
 
     @GetMapping("/best-rate")
     public Allocation getBestRate() {
-        var tier1 = getPlatformTiersDescByRate().get(0);
+        var tier1 = getPlatformTiersDescByRate(COIN_BTC).get(0);
         return new Allocation().setName(tier1.getName()).setRate(tier1.getRate());
     }
 
@@ -40,7 +42,7 @@ public class AllocationController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        var platformTiers = getPlatformTiersDescByRate();
+        var platformTiers = getPlatformTiersDescByRate(COIN_BTC);
 
         int count = getCountOfOffersForAmount(amount, platformTiers);
 
@@ -56,8 +58,8 @@ public class AllocationController {
         return count;
     }
 
-    private List<PlatformTier> getPlatformTiersDescByRate() {
-        var url = "https://priceless-khorana-4dd263.netlify.app/btc-rates.json";
+    private List<PlatformTier> getPlatformTiersDescByRate(String coin) {
+        var url = String.format("https://priceless-khorana-4dd263.netlify.app/%s-rates.json", coin);
         var platforms = restTemplate.getForObject(url, Platform[].class);
         return mapPlatformsToPlatformTiers(platforms);
     }
@@ -80,17 +82,7 @@ public class AllocationController {
 
 
     public Allocation getBestEthRate() {
-        var url = "https://priceless-khorana-4dd263.netlify.app/eth-rates.json";
-        var platforms = restTemplate.getForObject(url, Platform[].class);
-        var platformTiers = stream(platforms).flatMap(p -> stream(p.getTiers()).map(t ->
-                new PlatformTier()
-                    .setName(p.getName())
-                    .setRate(t.getRate())
-                    .setMax(t.getMax())
-            ))
-            .sorted(Comparator.comparingDouble(PlatformTier::getRate).reversed())
-            .toList();
-
+        var platformTiers = getPlatformTiersDescByRate(COIN_ETH);
         var tier1 = platformTiers.get(0);
         return new Allocation().setName(tier1.getName()).setRate(tier1.getRate());
     }
