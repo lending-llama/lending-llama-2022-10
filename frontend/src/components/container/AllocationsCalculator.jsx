@@ -24,7 +24,7 @@ export const AllocationsCalculator = () => {
   }, [amount])
 
   return (
-    <CardWithHeader header="Calculate Allocation for Amount">
+    <Card header="Calculate Allocation for Amount">
       <InputWithLabel
         name="amount"
         label="BTC Amount"
@@ -35,6 +35,6 @@ export const AllocationsCalculator = () => {
         onChange={e => setAmount(e.target.value)}
       />
       <div className="pt-4"><AllocationsTable allocations={allocations}/></div>
-    </CardWithHeader>
+    </Card>
   );
 }

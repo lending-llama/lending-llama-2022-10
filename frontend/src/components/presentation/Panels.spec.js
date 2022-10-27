@@ -11,9 +11,9 @@ describe('Card', () => {
 describe('CardWithHeader', () => {
   it('has skeleton as specified by Tailwind UI', () => {
     expect(renderer.create(
-      <CardWithHeader header="header">
+      <Card header="header">
         main content
-      </CardWithHeader>
+      </Card>
     ).toJSON()).toMatchSnapshot();
   })
 })
