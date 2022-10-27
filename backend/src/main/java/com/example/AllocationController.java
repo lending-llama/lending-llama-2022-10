@@ -1,6 +1,5 @@
 package com.example;
 
-import io.split.client.SplitClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,12 +20,13 @@ public class AllocationController {
 
     private static final String COIN_BTC = "btc";
     private static final String COIN_ETH = "eth";
-    private RestTemplate restTemplate;
-    private SplitClient splitClient;
+    private final RestTemplate restTemplate;
 
-    public AllocationController(RestTemplate restTemplate, SplitClient splitClient) {
+    private final FeatureState featureState;
+
+    public AllocationController(RestTemplate restTemplate, FeatureState featureState) {
         this.restTemplate = restTemplate;
-        this.splitClient = splitClient;
+        this.featureState = featureState;
     }
 
     @GetMapping("/best-rate")
@@ -36,9 +36,8 @@ public class AllocationController {
     }
 
     @GetMapping("/allocations")
-    public Stream<Allocation> getAllocation(@RequestParam Double amount) throws Exception {
-        var treatment = splitClient.getTreatment("key","multiple-tiers");
-        if (!"on".equals(treatment)) {
+    public Stream<Allocation> getAllocation(@RequestParam Double amount) {
+        if (!featureState.isAllowMultipleTiers()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
@@ -46,16 +45,15 @@ public class AllocationController {
 
         int count = getCountOfOffersForAmount(amount, platformTiers);
 
-        return platformTiers.subList(0, count+1).stream().map(
+        return platformTiers.subList(0, count + 1).stream().map(
             t -> new Allocation().setName(t.getName()).setRate(t.getRate())
         );
     }
 
     public int getCountOfOffersForAmount(Double amount, List<PlatformTier> platformTiers) {
-        var count = (int) IntStream.range(1, platformTiers.size())
+        return (int) IntStream.range(1, platformTiers.size())
             .takeWhile(i -> platformTiers.stream().limit(i).mapToDouble(PlatformTier::getMax).sum() < amount)
             .count();
-        return count;
     }
 
     private List<PlatformTier> getPlatformTiersDescByRate(String coin) {
