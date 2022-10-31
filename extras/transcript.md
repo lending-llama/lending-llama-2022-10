@@ -1,7 +1,7 @@
 # Technical Practices for Agile Development
 
 Alex Bepple  
-Last update: 10 June 2022
+Last update: 31 October 2022
 
 [TOC]
 
@@ -64,7 +64,7 @@ Of course, it depends on the point of view what is "observable" behavior and wha
 
 Term [popularized](https://martinfowler.com/books/refactoring.html) by Martin Fowler.
 
-If you want inspiration for how to refactor legacy code, Michael Feathers’ «[Working Effectively with Legacy Code](https://www.goodreads.com/en/book/show/44919.Working_Effectively_with_Legacy_Code)» is a classic.
+If you want inspiration for how to refactor legacy code, Michael Feathers’s «[Working Effectively with Legacy Code](https://www.goodreads.com/en/book/show/44919.Working_Effectively_with_Legacy_Code)» is a classic.
 
 
 
@@ -180,15 +180,25 @@ My favorite design principle to foster cohesion and reduce coupling is the DIP.
 * [Original article](https://arweave.net/7CBm9EIGSzNZdiVZNJpXEXx79CI9MOPQP-RBkkLmYrE)
 * [Very good discussion by Brett Schuchert](https://martinfowler.com/articles/dipInTheWild.html)
 
-There are many ways to implement the DIP, including 
+There are many ways to implement the DIP, including dependency injection, which is the most common and most familiar mechanism.
 
+However, also consider alternatives, e.g.
+
+* Service Registry pattern
 * [Observer design pattern](https://sourcemaking.com/design_patterns/observer)  
   (remember decoupling error handling in `bestFetchEver` from Redux)
-* Dependency Injection
+* patterns used in [Self-Contained Systems](https://scs-architecture.org/)  
+  (remember this?)
 
-Beware: neither dependency injection, nor any other technical facility implies that the _principle_ of dependency inversion is followed.
+```mermaid
+graph TD
+FeatureStateClient --> FeatureState;
+FeatureStateUpdater --> FeatureState;
+```
 
-### Dependency-Inverted Architecture
+Beware: neither dependency injection, nor any other technical facility can actually enforce the _principle_ of dependency inversion.
+
+### Dependency-Inverted Architecture (and Structuring Code Bases)
 
 The Dependency-Inversion Principle is great design principle and a great guiding principle for achitecture. Its applications to full-blown architectures are known as
 
@@ -202,12 +212,12 @@ Remember this?
 
 ```mermaid
 graph TD
-AllocationController --> FeatureToggleState;
+AllocationController --> FeatureState;
 AllocationController --> AllocationChooser;
-FeatureToggleUpdater --> FeatureToggleState;
+FeatureStateUpdater --> FeatureState;
 ```
 
-Or, at module level:
+At module level and, thus, usually also at folder level:
 
 ```mermaid
 graph TD
@@ -218,7 +228,7 @@ feature-sync --> feature-state;
 
 Not only does the cognitive complexity explode for a non-trivial system. In my experience, oftentimes, following this architectural style blindly actually increases coupling. For instance, `AllocationController` and `AllocationChooser` are likely to change in tandem as our domain evolves. If that’s the case, spreading these two out over two modules only creates friction without any tangible benefits.
 
-Instead, I suggest to only invert when needed and to keep things simple until then:
+Instead, I suggest to only invert at module level when needed and to keep things simple until then:
 
 ```mermaid
 graph TD
@@ -227,7 +237,7 @@ allocation --> feature;
 
 When is then? In this particular example: when incidental details of external APIs or details of updating feature state creep into `allocation`.
 
-I understand that this approach is more complex than a hard rule and requires one to take more care when developing. But in my view this at least allows for a clean architecture without quickly becoming impractical. – This also ties in nicely with something that I have learned from Kent Beck: cohesion and coupling are hard to analyze statically, but are better understood dynamically, i.e. by observing how a system evolves, which change it must support. (Unfortunately I do not have a citation for this.) Put differently: what looks like a fabulously bad choice may not matter in the longer term, if you never have to touch this piece of code. Put effort into more elaborate architecture where it actually matters: where you stumble upon deficiencies of previous architectural choices.
+I understand that this ‘it depends’ approach is more complex than a hard rule and requires one to take more care when developing. But in my view this at least allows for a clean architecture without quickly becoming impractical. – This also ties in nicely with something that I have learned from Kent Beck: cohesion and coupling are hard to analyze statically, but are better understood dynamically, i.e. by observing how a system evolves and which changes it must support. (Unfortunately I do not have a citation for this.) Put differently: what looks like a fabulously bad choice may not matter in the longer term, if you never have to touch this piece of code. Put effort into more elaborate architecture where it actually matters: where you stumble upon deficiencies of previous architectural choices.
 
 
 
@@ -235,8 +245,8 @@ I understand that this approach is more complex than a hard rule and requires on
 
 ### Generative Testing – Complement to Example-Based Testing
 
-aka property-based testing
-Invented by John Hughes: [QuickCheck](https://en.wikipedia.org/wiki/QuickCheck) (Haskell)
+aka property-based testing  
+Invented by John Hughes, original framework called [“QuickCheck”](https://en.wikipedia.org/wiki/QuickCheck) (Haskell)
 
 > Property based testing is the construction of tests such that, when these tests are fuzzed, failures in the test reveal problems with the system under test.
 >
